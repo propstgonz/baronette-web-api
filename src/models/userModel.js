@@ -23,9 +23,9 @@ const findUserByUsername = async (username) => {
 
 
 /**
- * Check if the user is an admin by looking for their user_id in the admin_list table
- * @param {string} user_id - The ID of the user to check
- * @returns {Promise<boolean>} - Returns true if the user is an admin, false otherwise
+ * Comprueba si el usuario es administrador
+ * @param {string} user_id - el id del usuario
+ * @returns {Promise<boolean>} - Devuelve true si es admin, false si no
  */
 const checkIfAdmin = async (user_id) => {
   try {
@@ -33,7 +33,7 @@ const checkIfAdmin = async (user_id) => {
     const values = [user_id];
     const result = await pool.query(query, values);
 
-    return result.rows.length > 0; // Return true if user is found in admin_list
+    return result.rows.length > 0; // True si el id está en admin_list
   } catch (error) {
     throw new Error('Database query error');
   }

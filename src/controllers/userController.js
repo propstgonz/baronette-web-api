@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
 };
 
 /**
- * Check if the user is an admin and handle access to settings
+ * Manejador del admin check
  * @param {object} req - Express request object
  * @param {object} res - Express response object
  */
@@ -48,7 +48,7 @@ const checkAdmin = async (req, res) => {
   const { user_id } = req.body;
 
   try {
-    // Check if the userId is in the admin_list
+    // Comprueba que el user_id se encuentre en admin_list
     const isAdmin = await userModel.checkIfAdmin(user_id);
 
     if (isAdmin) {
