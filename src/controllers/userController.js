@@ -6,6 +6,7 @@ const userModel = require('../models/userModel');
  * @param {object} res - Express response object
  */
 const loginUser = async (req, res) => {
+  console.log('Login request received: ', req.body);
   const { username, password } = req.body;
 
   try {
@@ -27,7 +28,7 @@ const loginUser = async (req, res) => {
         { message: 'Usuario sin verificar. Un administrador te validará pronto.' }
       );
     }
-
+    console.log(`User ${username} logged in successfully.`);
     return res.status(200).json(
       {
          message: '¡Acceso correcto!',
