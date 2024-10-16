@@ -16,7 +16,7 @@ const loginUser = async (req, res) => {
     }
 
     // Comparador de la contraseña (aquí podemos hashearla)
-    if (user.password !== password) {
+    if (user.user_password !== password) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
