@@ -1,12 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-app.use(cors());
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Middleware para habilitar CORS
+app.use(cors());
 
 // Middleware para parsear el contenido de los JSON
 app.use(bodyParser.json());
