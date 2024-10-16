@@ -4,5 +4,6 @@ const userController = require('../controllers/userController');
 
 // POST /login - Ruta para gestionar el login de usuarios
 router.post('/login', userController.loginUser);
+router.post('/settings', userController.checkAdmin);
 
 module.exports = router;
