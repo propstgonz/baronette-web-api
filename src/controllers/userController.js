@@ -15,6 +15,13 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Usuario no encontrado' });
     }
 
+    // Comprobación usuario verificado
+    if (!user.verified) {
+      return res.status(401).json(
+        { message: 'Usuario sin verificar. Un administrador te validará pronto.' }
+      );
+    }
+
     // Comparador de la contraseña (aquí podemos hashearla)
     if (user.password !== password) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
