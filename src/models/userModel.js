@@ -75,9 +75,24 @@ const createUser = async (userData) => {
 };
 
 
+
+/**
+ * Verificar usuarios en la base de datos
+ * @param {Array<string>} usernames - Array de nombres de usuario a verificar
+ * @returns {Promise<void>}
+ */
+const verifyUsers = async (usernames) => {
+  const query = 'UPDATE public.user_list SET verified = TRUE WHERE username = ANY($1)';
+  const values = [usernames]; // PostgreSQL permite pasar un array usando ANY
+
+  await pool.query(query, values);
+};
+
+// Exportar las funciones
 module.exports = {
   findUserByUsername,
   findUserByEmail,
   checkIfAdmin,
   createUser,
+  verifyUsers,
 };
