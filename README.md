@@ -44,7 +44,7 @@ baronette-api/
     cd baronette-api
     ```
 3. ### Configuración de las variables de entorno:
-    Crea un archivo ``.env`` en la raíz del proyecto con las siguientes variables:`
+    Crea un archivo ``.env`` en la raíz del proyecto con las siguientes variables:
     ```bash
     # Puerto donde corre la API
     PORT=3000
@@ -68,7 +68,7 @@ baronette-api/
         ```
         Esto construirá la imagen Docker y levantará un contenedor con la API escuchando en el puerto ``3000`` en segundo plano.
     - #### Sin Docker
-        Si prefieres ejecutar la instalación directamente:
+        Si prefieres ejecutar la aplicación directamente:
         ```bash
         npm src/app.js
         ```
@@ -155,7 +155,7 @@ Si deseas desplegar la API en un servidor, asegúrate de que las variables de en
     ```bash
     docker run -d -p 3000:3000 --env-file .env baronette-data-api
     ```
-***Si bien también es posible ejecutar el comando explicado anteriormente: ``docker compose up -d --build``. Hay que tener el cuenta que antes de ejecutarlo se deben hacer las modificaciones necesarias en el archivo ``docker-compose.yml``***
+***También es posible ejecutar el comando explicado anteriormente: ``docker compose up -d --build``. Hay que tener el cuenta que antes de ejecutarlo se deben hacer las modificaciones necesarias en el archivo ``docker-compose.yml``***
 
 ---
 ## 6. Dependencias
@@ -164,7 +164,7 @@ Si deseas desplegar la API en un servidor, asegúrate de que las variables de en
 - body-parser: Middleware para procesar datos en formato JSON.
 - CORS: Middleware para habilitar Cross-Origin Resource Sharing.
 - dotenv: Middleware para cargar variables de entorno desde un archivo ``env``.
-- pg: Cliente de Node.js para PostgreSQL
+- pg: Cliente de Node.js para PostgreSQL.
 
 ---
 ## 7. Licencia
