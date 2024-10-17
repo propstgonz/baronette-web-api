@@ -146,10 +146,33 @@ const getUnverifiedUsers = async (req, res) => {
 };
 
 
+/**
+ * Verificar usuarios seleccionados
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const verifyUsers = async (req, res) => {
+  const { usernames } = req.body; // Se espera un array de usernames
 
+  if (!Array.isArray(usernames) || usernames.length === 0) {
+      return res.status(400).json({ message: 'No se han enviado usuarios para verificar.' });
+  }
+
+  try {
+      await userModel.verifyUsers(usernames); // Llama al método en el modelo para actualizar la base de datos
+      return res.status(200).json({ message: 'Usuarios verificados exitosamente.' });
+  } catch (error) {
+      console.error('Error al verificar usuarios:', error.message);
+      return res.status(500).json({ message: 'Error al verificar usuarios.' });
+  }
+};
+
+
+// Exportar los métodos
 module.exports = {
   loginUser,
   checkAdmin,
   registerUser,
   getUnverifiedUsers,
+  verifyUsers,
 };
