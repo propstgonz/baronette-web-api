@@ -1,6 +1,6 @@
 
 # Baronette Data API
-#### Esta API es parte de un sistema que conecta una aplicación web con una base de datos PostgreSQL. Permite la gestión de usuarios, incluyendo registro, login y verificación de privilegios de administrador. Está construida utilizando Node.js con Express, y la base de datos es administrada con PostgreSQL.
+#### Esta API es parte de un sistema que conecta una aplicación web con una base de datos PostgreSQL. Permite la gestión de usuarios, incluyendo registro, login y verificación de privilegios de administrador. Está construida utilizando Node.js con Express, y la base de datos es administrada con PostgreSQL. Se ha desarrollado bajo un marco REST, para facilitar su despliegue, mantenimiento y escalabilidad.
 
 ---
 ## Tabla de contenidos
