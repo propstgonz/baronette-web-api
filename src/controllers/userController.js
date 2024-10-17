@@ -63,7 +63,57 @@ const checkAdmin = async (req, res) => {
   }
 };
 
+
+/**
+ * Registrar un nuevo usuario
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const registerUser = async (req, res) => {
+  const { 
+    first_name, last_name_1, last_name_2,
+    username, user_password, email 
+  } = req.body;
+
+  try {
+    // Validar que el nombre de usuario es único
+    const existingUserByUsername = await userModel.findUserByUsername(username);
+    if (existingUserByUsername) {
+      return res.status(400).json(
+        { message: 'El nombre de usuario ya existe.' }
+      );
+    }
+
+    // Validar que el correo electrónico es único
+    const existingUserByEmail = await userModel.findUserByEmail(email);
+    if (existingUserByEmail) {
+      return res.status(400).json(
+        { message: 'El correo electrónico ya está registrado.' }
+      );
+    }
+
+    // Si todas las validaciones son correctas, registrar el nuevo usuario
+    await userModel.createUser({
+      first_name,
+      last_name_1,
+      last_name_2: last_name_2 || null,
+      username,
+      user_password,
+      email,
+    });
+
+    return res.status(201).json({ message: 'Usuario registrado con éxito.' });
+  } catch (error) {
+    console.error('Error registrando usuario:', error);
+    return res.status(500).json(
+      { message: 'Error en el servidor al registrar usuario.' }
+    );
+  }
+};
+
+
 module.exports = {
   loginUser,
   checkAdmin,
+  registerUser,
 };
