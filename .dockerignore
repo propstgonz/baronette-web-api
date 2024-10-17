@@ -1,0 +1,30 @@
+# Ignorar las dependencias de desarrollo
+node_modules
+npm-debug.log
+
+# Ignorar archivos de pruebas
+__tests__
+test
+*.spec.js
+
+# Ignorar archivos de caché
+.cache
+dist
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar el directorio de documentación
+docs
+
+# Ignorar el archivo de configuración de IDE
+.vscode
+.idea
+
+# Ignorar archivos de ejemplo
+.env-sample
+
+# Ignorar archivos de Git
+.git
+.gitignore

@@ -1,0 +1,13 @@
+name: baronette-data-api
+services:
+  baronette-data-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: baronette-data-api
+    container_name: baronette-data-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/home/docker/baronette/data-api/app/src
+    restart: unless-stopped
