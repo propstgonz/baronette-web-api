@@ -3,7 +3,17 @@
 #### Esta API es parte de un sistema que conecta una aplicación web con una base de datos PostgreSQL. Permite la gestión de usuarios, incluyendo registro, login y verificación de privilegios de administrador. Está construida utilizando Node.js con Express, y la base de datos es administrada con PostgreSQL.
 
 ---
-## Estructura del proyecto
+## Tabla de contenidos
+1. **Estructura del proyecto**
+2. **Instalación y configuración**
+3. **Endpoints**
+4. **Modelo de Base de Datos**
+5. **Despliegue**
+6. **Dependencias**
+7. **Licencia**
+
+---
+## 1. Estructura del proyecto
 ```
 baronette-api/
 ├── src/
@@ -23,7 +33,7 @@ baronette-api/
 ├── package-lock.json............ Archivo de lock de dependencias
 ```
 ---
-## Instalación y configuración
+## 2. Instalación y configuración
 1. ### Requisitos previos:
     - Node.js (se recomienda usar una versión LTS para asegurar la estabilidad)
     - Docker (para desplegar el servicio de forma independiente)
@@ -63,7 +73,7 @@ baronette-api/
         npm src/app.js
         ```
 ---
-## Endpoints
+## 3. Endpoints
 ### ``POST /api/login``
 Realiza el login de un usuario.
 - Body:
@@ -109,7 +119,7 @@ Verifica si un usuario es administrador.
     - ``500 Internal Server Error``: Error al verificar el estatus del usuario.
 
 ---
-## Modelo de Base de Datos
+## 4. Modelo de Base de Datos
 La API se conecta a una base de datos con las siguientes características:
 - Servicio: PostgreSQL (se recomienda usar la versión PSQL16.3)
 - Codificación de los datos en ``UTF-8``
@@ -135,7 +145,7 @@ La API se conecta a una base de datos con las siguientes características:
         |user_id|SERIAL| Identificador único de usuario uuid4 (clave foránea [user_list])|
 
 ---
-## Despliegue
+## 5. Despliegue
 Si deseas desplegar la API en un servidor, asegúrate de que las variables de entorno estén configuradas correctamente en el servidor y que la base de datos PostgreSQL esté accesible desde la ubicación del servidor.
 1. ### Construir la imagen de Docker:
     ```bash
@@ -148,7 +158,7 @@ Si deseas desplegar la API en un servidor, asegúrate de que las variables de en
 ***Si bien también es posible ejecutar el comando explicado anteriormente: ``docker compose up -d --build``. Hay que tener el cuenta que antes de ejecutarlo se deben hacer las modificaciones necesarias en el archivo ``docker-compose.yml``***
 
 ---
-## Dependencias
+## 6. Dependencias
 - Express: Framework de Node.js para desarrollar servidores web.
 - bcrypt: Middleware para encriptar y verificar datos sensibles.
 - body-parser: Middleware para procesar datos en formato JSON.
@@ -157,7 +167,7 @@ Si deseas desplegar la API en un servidor, asegúrate de que las variables de en
 - pg: Cliente de Node.js para PostgreSQL
 
 ---
-## Licencia
+## 7. Licencia
 Este proyecto está licenciado bajo la licencia MIT:
 ```txt
 MIT License
