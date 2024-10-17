@@ -17,7 +17,7 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Comparador de la contraseña (aquí podemos hashearla)
+    // Comparador de la contraseña (hasheada en el register)
     const isPasswordValid = await bcrypt.compare(password, user.user_password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
