@@ -14,4 +14,7 @@ router.post('/register', userController.registerUser);
 // GET /unverified-users Ruta para recoger usuarios no verificados
 router.get('/unverified-users', userController.getUnverifiedUsers);
 
+// POST /verify-users - Ruta para verificar usuarios seleccionados
+router.post('/verify-users', userController.verifyUsers);
+
 module.exports = router;
