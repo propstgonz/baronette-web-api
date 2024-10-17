@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const pool = require('../config/database');
 
 
 /**
@@ -122,8 +123,33 @@ const registerUser = async (req, res) => {
 };
 
 
+/**
+ * Obtiene los usuarios no verificados
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const getUnverifiedUsers = async (req, res) => {
+  try {
+    const query = `
+      SELECT first_name, last_name_1, last_name_2, username, email 
+      FROM public.user_list 
+      WHERE verified = FALSE
+    `;
+    const result = await pool.query(query);
+
+    // Devuelve los usuarios en formato JSON
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('Error retrieving unverified users:', error.message);
+    res.status(500).json({ message: 'Error retrieving unverified users' });
+  }
+};
+
+
+
 module.exports = {
   loginUser,
   checkAdmin,
   registerUser,
+  getUnverifiedUsers,
 };
