@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
 /**
  * Manejador del login del usuario
@@ -17,7 +18,7 @@ const loginUser = async (req, res) => {
     }
 
     // Comparador de la contraseña (aquí podemos hashearla)
-    const isPasswordValid = (user.user_password === password);
+    const isPasswordValid = await bcrypt.compare(password, user.user_password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
