@@ -7,8 +7,8 @@ const bcrypt = require('bcrypt');
  * @param {object} res - Express response object
  */
 const loginUser = async (req, res) => {
-  console.log('Login request received: ', req.body);
   const { username, password } = req.body;
+  console.log(`Login request received: ${username}`);
 
   try {
     const user = await userModel.findUserByUsername(username);
