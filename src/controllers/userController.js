@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
+
 /**
  * Manejador del login del usuario
  * @param {object} req - Express request object
@@ -26,7 +27,10 @@ const loginUser = async (req, res) => {
     // Comprobación usuario verificado
     if (!user.verified) {
       return res.status(403).json(
-        { message: 'Usuario sin verificar. Un administrador te validará pronto.' }
+        { 
+          message:
+          'Usuario sin verificar. Un administrador te validará pronto.' 
+        }
       );
     }
     console.log(`User ${username} logged in successfully.`);
@@ -34,7 +38,8 @@ const loginUser = async (req, res) => {
       {
          message: '¡Acceso correcto!',
          user_id: user.id 
-      });
+      }
+    );
   } catch (error) {
     console.error('Error durante el acceso:', error.message);
     return res.status(500).json({ message: 'Error durante el acceso' });
@@ -54,9 +59,13 @@ const checkAdmin = async (req, res) => {
     const isAdmin = await userModel.checkIfAdmin(user_id);
 
     if (isAdmin) {
-      return res.status(200).json({ message: 'Entrando en ajustes como administrador' });
+      return res.status(200).json(
+        { message: 'Entrando en ajustes como administrador' }
+      );
     } else {
-      return res.status(200).json({ message: 'Entrando en ajustes de usuario' });
+      return res.status(200).json(
+        { message: 'Entrando en ajustes de usuario' }
+      );
     }
   } catch (error) {
     console.error('Error checking admin status:', error.message);

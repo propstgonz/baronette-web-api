@@ -1,6 +1,7 @@
 const pool = require('../config/database');
 const bcrypt = require('bcrypt');
 
+
 /**
  * Buscar usuario por username en la base de datos
  * @param {string} username - El username a buscar
