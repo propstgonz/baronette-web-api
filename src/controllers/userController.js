@@ -222,6 +222,44 @@ const deleteSelectedUser = async (req, res) => {
 };
 
 
+/**
+ * Actualiza la información de un usuario a partir de su user_id.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const updateUserInfo = async (req, res) => {
+  const userId = req.params.user_id;
+  if (!userId) {
+    return res.status(400).json({ message: 'Se requiere un user_id' });
+  }
+
+  const { first_name, last_name1, last_name2, email } = req.body;
+  const updatedInfo = {};
+
+  if (first_name) updatedInfo.first_name = first_name;
+  if (last_name1) updatedInfo.last_name1 = last_name1;
+  if (last_name2) updatedInfo.last_name2 = last_name2;
+  if (email) updatedInfo.email = email;
+
+  if (Object.keys(updatedInfo).length === 0) {
+    return res.status(400).json({ message: 'No se proporcionó información para actualizar.' });
+  }
+
+  try {
+    const result = await userModel.updateUserById(userId, updatedInfo);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    return res.status(200).json({ message: 'Información actualizada con éxito' });
+  } catch (error) {
+    console.error('Error al actualizar la información del usuario:', error.message);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+
 
 module.exports = {
   loginUser,
@@ -231,4 +269,5 @@ module.exports = {
   verifyUsers,
   deleteAccount,
   deleteSelectedUser,
+  updateUserInfo,
 };

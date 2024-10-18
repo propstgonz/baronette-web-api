@@ -120,6 +120,35 @@ const deleteUserByUsername = async (username) => {
 };
 
 
+/**
+ * Actualiza la información de un usuario
+ * @param {string} userId - id del usuario en la base de datos
+ * @param {JSON} updatedInfo - información que hay que actualizar
+ * @returns {Promise<object>} - Devuelve el resultado de la consulta
+ */
+const updateUserById = async (userId, updatedInfo) => {
+  const { first_name, last_name1, last_name2, email } = updatedInfo;
+  const query = `
+      UPDATE public.user_list
+      SET 
+          first_name = COALESCE($1, first_name),
+          last_name_1 = COALESCE($2, last_name_1),
+          last_name_2 = COALESCE($3, last_name_2),
+          email = COALESCE($4, email),
+          verified = false
+      WHERE id = $5
+  `;
+
+  const values = [first_name, last_name1, last_name2, email, userId];
+  try {
+    const result = await pool.query(query, values);
+    return result;
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error);
+    throw error;
+  }
+};
+
 
 // Exportar las funciones
 module.exports = {
@@ -130,4 +159,5 @@ module.exports = {
   verifyUsers,
   deleteUserById,
   deleteUserByUsername,
+  updateUserById,
 };

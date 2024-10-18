@@ -26,6 +26,9 @@ router.get('/verified-users', userController.getUnverifiedUsers);
 // POST /delete-account - Ruta para eliminar la propia cuenta de usuario
 router.delete('/delete-account', userController.deleteAccount);
 
+// PATCH /update-user - Ruta para actualizar la información de un usuario
+router.patch('/update-user/:user_id', userController.updateUserInfo);
+
 
 
 
