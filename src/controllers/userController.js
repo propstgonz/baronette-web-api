@@ -168,11 +168,67 @@ const verifyUsers = async (req, res) => {
 };
 
 
-// Exportar los métodos
+/**
+ * Elimina la cuenta de un usuario.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const deleteAccount = async (req, res) => {
+  const { user_id } = req.body;
+
+  if (!user_id) {
+      return res.status(400).json({ message: 'user_id es requerido' });
+  }
+
+  try {
+      const result = await userModel.deleteUserById(user_id);
+
+      if (result.rowCount === 0) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      return res.status(200).json({ message: 'Cuenta eliminada con éxito' });
+  } catch (error) {
+      console.error('Error al eliminar la cuenta:', error.message);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+
+/**
+ * Elimina un usuario a partir de su username.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const deleteSelectedUser = async (req, res) => {
+  const { username } = req.params; // Esperamos un único username
+
+  if (!username) {
+      return res.status(400).json({ message: 'Se requiere un username' });
+  }
+
+  try {
+      const result = await userModel.deleteUserByUsername(username);
+
+      if (result.rowCount === 0) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      return res.status(200).json({ message: 'Usuario eliminado con éxito' });
+  } catch (error) {
+      console.error('Error al eliminar usuario:', error.message);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+
+
 module.exports = {
   loginUser,
   checkAdmin,
   registerUser,
   getUnverifiedUsers,
   verifyUsers,
+  deleteAccount,
+  deleteSelectedUser,
 };

@@ -82,11 +82,44 @@ const createUser = async (userData) => {
  * @returns {Promise<void>}
  */
 const verifyUsers = async (usernames) => {
-  const query = 'UPDATE public.user_list SET verified = TRUE WHERE username = ANY($1)';
-  const values = [usernames]; // PostgreSQL permite pasar un array usando ANY
+  try {
+    const query = `
+      UPDATE public.user_list SET verified = TRUE WHERE username = ANY($1)
+    `;
+    const values = [usernames]; // PostgreSQL permite pasar un array usando ANY
 
-  await pool.query(query, values);
+    await pool.query(query, values);
+  } catch (error) {
+    throw new Error('Error al verificar usuarios: ' + error.message);
+  }
+  
 };
+
+
+/**
+ * Elimina un usuario por su ID.
+ * @param {string} userId - El ID del usuario a eliminar
+ * @returns {Promise<object>} - Devuelve el resultado de la consulta
+ */
+const deleteUserById = async (userId) => {
+  const query = 'DELETE FROM public.user_list WHERE id = $1'; // Cambia 'id' por el nombre de la columna de tu PK
+  const result = await pool.query(query, [userId]);
+  return result;
+};
+
+
+/**
+ * Elimina un usuario por su username.
+ * @param {string} username - El username del usuario a eliminar
+ * @returns {Promise<object>} - Devuelve el resultado de la consulta
+ */
+const deleteUserByUsername = async (username) => {
+  const query = 'DELETE FROM public.user_list WHERE username = $1'; // Asegúrate de que 'username' es el nombre correcto de la columna
+  const result = await pool.query(query, [username]);
+  return result;
+};
+
+
 
 // Exportar las funciones
 module.exports = {
@@ -95,4 +128,6 @@ module.exports = {
   checkIfAdmin,
   createUser,
   verifyUsers,
+  deleteUserById,
+  deleteUserByUsername,
 };
