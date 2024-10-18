@@ -75,7 +75,6 @@ const createUser = async (userData) => {
 };
 
 
-
 /**
  * Verificar usuarios en la base de datos
  * @param {Array<string>} usernames - Array de nombres de usuario a verificar
@@ -86,7 +85,7 @@ const verifyUsers = async (usernames) => {
     const query = `
       UPDATE public.user_list SET verified = TRUE WHERE username = ANY($1)
     `;
-    const values = [usernames]; // PostgreSQL permite pasar un array usando ANY
+    const values = [usernames];
 
     await pool.query(query, values);
   } catch (error) {
@@ -102,7 +101,7 @@ const verifyUsers = async (usernames) => {
  * @returns {Promise<object>} - Devuelve el resultado de la consulta
  */
 const deleteUserById = async (userId) => {
-  const query = 'DELETE FROM public.user_list WHERE id = $1'; // Cambia 'id' por el nombre de la columna de tu PK
+  const query = 'DELETE FROM public.user_list WHERE id = $1';
   const result = await pool.query(query, [userId]);
   return result;
 };
@@ -114,7 +113,7 @@ const deleteUserById = async (userId) => {
  * @returns {Promise<object>} - Devuelve el resultado de la consulta
  */
 const deleteUserByUsername = async (username) => {
-  const query = 'DELETE FROM public.user_list WHERE username = $1'; // Asegúrate de que 'username' es el nombre correcto de la columna
+  const query = 'DELETE FROM public.user_list WHERE username = $1';
   const result = await pool.query(query, [username]);
   return result;
 };
@@ -150,7 +149,44 @@ const updateUserById = async (userId, updatedInfo) => {
 };
 
 
-// Exportar las funciones
+/**
+ * Obtiene un usuario por su ID.
+ * @param {string} userId - ID del usuario
+ * @returns {object} - Usuario encontrado
+ */
+const getUserById = async (userId) => {
+  const query = 'SELECT * FROM public.user_list WHERE id = $1';
+  const values = [userId];
+  const result = await pool.query(query, values);
+  return result.rows[0] || null;
+};
+
+
+/**
+* Verifica si la contraseña proporcionada coincide con la almacenada.
+* @param {string} password - Contraseña a verificar
+* @param {string} hashedPassword - Contraseña almacenada (hash)
+* @returns {boolean} - True si coinciden, false si no
+*/
+const verifyPassword = async (password, hashedPassword) => {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
+
+/**
+* Actualiza la contraseña del usuario.
+* @param {string} userId - ID del usuario
+* @param {string} newPassword - Nueva contraseña
+*/
+const updatePassword = async (userId, newPassword) => {
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  const query = 'UPDATE public.user_list SET user_password = $1 WHERE id = $2';
+  const values = [hashedPassword, userId];
+  await pool.query(query, values);
+};
+
+
+
 module.exports = {
   findUserByUsername,
   findUserByEmail,
@@ -160,4 +196,7 @@ module.exports = {
   deleteUserById,
   deleteUserByUsername,
   updateUserById,
+  getUserById,
+  verifyPassword,
+  updatePassword,
 };

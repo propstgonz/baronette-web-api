@@ -260,6 +260,40 @@ const updateUserInfo = async (req, res) => {
 }
 
 
+/**
+ * Cambia la contraseña de un usuario a partir de su ID.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ */
+const changePassword = async (req, res) => {
+  const userId = req.params.user_id;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Se requieren ambas contraseñas.' });
+  }
+
+  try {
+      const user = await userModel.getUserById(userId);
+
+      if (!user) {
+          return res.status(404).json({ message: 'Usuario no encontrado.' });
+      }
+
+      const isMatch = await userModel.verifyPassword(currentPassword, user.user_password);
+
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Contraseña actual incorrecta.' });
+      }
+
+      await userModel.updatePassword(userId, newPassword);
+
+      return res.status(200).json({ message: 'Contraseña actualizada con éxito.' });
+  } catch (error) {
+      console.error('Error al cambiar la contraseña:', error.message);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
 
 module.exports = {
   loginUser,
@@ -270,4 +304,5 @@ module.exports = {
   deleteAccount,
   deleteSelectedUser,
   updateUserInfo,
+  changePassword,
 };

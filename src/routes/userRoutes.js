@@ -29,7 +29,8 @@ router.delete('/delete-account', userController.deleteAccount);
 // PATCH /update-user - Ruta para actualizar la información de un usuario
 router.patch('/update-user/:user_id', userController.updateUserInfo);
 
-
+// PATCH /change-password/:user_id - Ruta para cambiar la contraseña del usuario
+router.patch('/change-password/:user_id', userController.changePassword);
 
 
 module.exports = router;
