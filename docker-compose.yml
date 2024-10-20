@@ -13,12 +13,3 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    networks:
-     - postgres_baronette_webapp_network
-     - api_webapp_network
-
-networks:
-  postgres_baronette_webapp_network:
-    external: true
-  api_webapp_network:
-  driver: bridge
