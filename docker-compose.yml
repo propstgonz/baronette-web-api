@@ -14,8 +14,11 @@ services:
     env_file:
       - .env
     networks:
-     - baronette_webapp_network
+     - postgres_baronette_webapp_network
+     - api_webapp_network
 
 networks:
-  baronette_webapp_network:
+  postgres_baronette_webapp_network:
     external: true
+  api_webapp_network:
+  driver: bridge
