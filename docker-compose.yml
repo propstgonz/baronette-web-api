@@ -11,3 +11,11 @@ services:
     volumes:
       - ./src:/home/docker/baronette/data-api/app/src
     restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+     - baronette_webapp_network
+
+networks:
+  baronette_webapp_network:
+    external: true
