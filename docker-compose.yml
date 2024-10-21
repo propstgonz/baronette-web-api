@@ -13,3 +13,12 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    networks:
+      - baronette_db_api_network  # Conexión a la red base de datos-api
+      - baronette-webapp-api-network  # Conexión a la red web-api
+
+networks:
+  baronette_db_api_network:
+    external: true
+  baronette-webapp-api-network:
+    external: true
