@@ -10,10 +10,11 @@ const webapp_hostname = process.env.WEBAPP_HOSTNAME;
 
 // Middleware para habilitar CORS
 app.use(cors({
-  origin: `http://${webapp_hostname}`,  // Reemplaza con el origen de tu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: '*',  // Permitir cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],  // Permitir múltiples métodos
+  allowedHeaders: ['*'],  // Permitir todos los encabezados
 }));
+
 
 // Middleware para parsear el contenido de los JSON
 app.use(bodyParser.json());
