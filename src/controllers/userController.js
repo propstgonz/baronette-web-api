@@ -9,7 +9,7 @@ const pool = require('../config/database');
  * @param {object} res - Express response object
  */
 const loginUser = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, user_password } = req.body;
   console.log(`Login request received: ${username}`);
 
   try {
@@ -19,28 +19,27 @@ const loginUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Comparador de la contraseña (hasheada en el register)
-    const isPasswordValid = await bcrypt.compare(password, user.user_password);
+    if (!user.user_password) {
+      return res.status(500).json({ message: 'Usuario sin contraseña registrada' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(user_password, user.user_password);
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    // Comprobación usuario verificado
     if (!user.verified) {
-      return res.status(403).json(
-        { 
-          message:
-          'Usuario sin verificar. Un administrador te validará pronto.' 
-        }
-      );
+      return res.status(403).json({ 
+        message: 'Usuario sin verificar. Un administrador te validará pronto.' 
+      });
     }
+
     console.log(`User ${username} logged in successfully.`);
-    return res.status(200).json(
-      {
-         message: '¡Acceso correcto!',
-         user_id: user.id 
-      }
-    );
+    return res.status(200).json({ 
+      message: '¡Acceso correcto!',
+      user_id: user.id 
+    });
   } catch (error) {
     console.error('Error durante el acceso:', error.message);
     return res.status(500).json({ message: 'Error durante el acceso' });
