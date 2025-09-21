@@ -40,7 +40,7 @@ baronette-api/
     - Servicio de PostgreSQL instalado o acceso a una base de datos remota
 2. ### Clonar el repositorio:
     ```bash
-    git clone https://github.com/propstg/baronette-api.git
+    git clone https://github.com/propstg/baronette-web-api.git
     cd baronette-api
     ```
 3. ### Configuración de las variables de entorno:
@@ -172,7 +172,7 @@ Este proyecto está licenciado bajo la licencia MIT:
 ```txt
 MIT License
 
-Copyright (c) 2024 Propstg
+Copyright (c) 2025 Propstg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
