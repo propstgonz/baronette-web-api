@@ -6,24 +6,42 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const webapp_hostname = process.env.WEBAPP_HOSTNAME;
 
-// Middleware para habilitar CORS
+// Para que Traefik detecte la API
+app.get('/health', (req, res) => res.send('OK'));
+
+// Para que la API salude
+app.get('/api', (req, res) => {
+  res.json({ message: 'Hello from API!' });
+});
+
+// Middleware CORS
 app.use(cors({
-  origin: '*',  // Permitir cualquier origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],  // Permitir múltiples métodos
-  allowedHeaders: ['*'],  // Permitir todos los encabezados
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+  allowedHeaders: ['*'],
 }));
 
-
-// Middleware para parsear el contenido de los JSON
+// Middleware para parsear JSON y urlencoded
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Rutas de usuario
-app.use('/api', userRoutes);
+// **Rutas de usuario directamente en la raíz**
+app.use('/', userRoutes);
 
-// Iniciar el servidor
-app.listen(port, () => {
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+  res.status(404).json({ message: 'Ruta no encontrada' });
+});
+
+// Manejo de errores generales
+app.use((err, req, res, next) => {
+  console.error('Error general:', err);
+  res.status(500).json({ message: 'Error interno del servidor' });
+});
+
+// Iniciar servidor
+app.listen(port, '0.0.0.0', () => {
   console.log(`API listening on port ${port}`);
 });
+
