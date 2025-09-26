@@ -1,4 +1,3 @@
-name: baronette-data-api
 services:
   baronette-data-api:
     build:
@@ -6,19 +5,26 @@ services:
       dockerfile: Dockerfile
     image: baronette-data-api
     container_name: baronette-data-api
-    ports:
-      - "3000:3000"
     volumes:
       - ./src:/home/docker/baronette/data-api/app/src
     restart: unless-stopped
     env_file:
       - .env
     networks:
-      - baronette_db_api_network  # Conexión a la red base de datos-api
-      - baronette-webapp-api-network  # Conexión a la red web-api
+      - baronette_db_api_network
+      - baronette-webapp-api-network
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.baronettewebapi.rule=Host(`baronettewebapi.localhost`)"
+      - "traefik.http.routers.baronettewebapi.entrypoints=websecure"
+      - "traefik.http.routers.baronettewebapi.tls=true"
+      - "traefik.http.services.baronettewebapi.loadbalancer.server.port=3000"
 
 networks:
   baronette_db_api_network:
     external: true
   baronette-webapp-api-network:
+    external: true
+  traefik:
     external: true
