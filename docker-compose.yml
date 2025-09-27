@@ -14,7 +14,6 @@ services:
       - .env
     networks:
       - baronette_db_api_network
-      - baronette-webapp-api-network
       - traefik-net
     labels:
       - "traefik.enable=true"
@@ -29,8 +28,6 @@ services:
 
 networks:
   baronette_db_api_network:
-    external: true
-  baronette-webapp-api-network:
     external: true
   traefik-net:
     external: true
