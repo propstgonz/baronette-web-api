@@ -18,16 +18,10 @@ services:
       - traefik-net
     labels:
       - "traefik.enable=true"
-
-      # 🔹 MUY IMPORTANTE: Red que usará Traefik
       - "traefik.docker.network=traefik-net"
-
-      # Router para HTTPS
       - "traefik.http.routers.bwapi.rule=Host(`bwapi.baronette.es`)"
       - "traefik.http.routers.bwapi.entrypoints=websecure"
       - "traefik.http.routers.bwapi.tls=true"
-
-      # Servicio interno de la API
       - "traefik.http.services.bwapi.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.bwapi-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.bwapi.middlewares=bwapi-stripprefix"
