@@ -17,11 +17,13 @@ services:
       - traefik-net
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik-net"
       - "traefik.http.routers.bwapi.rule=Host(`bwapi.baronette.es`)"
       - "traefik.http.routers.bwapi.entrypoints=websecure"
       - "traefik.http.routers.bwapi.tls=true"
       - "traefik.http.services.bwapi.loadbalancer.server.port=3000"
+
+## IMPORTANTE: Sin estas etiquetas, la api no funciona, ya que hay que indicarle la red de enrutamiento de Traefik
+      - "traefik.docker.network=traefik-net"      
       - "traefik.http.middlewares.bwapi-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.bwapi.middlewares=bwapi-stripprefix"
 
