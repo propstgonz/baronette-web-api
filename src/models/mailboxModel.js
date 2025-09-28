@@ -1,14 +1,11 @@
-const pool = require('../config/mailDatabase'); // Conexión a maildb
-const sha512crypt = require('sha512crypt-node');
+const pool = require('../config/mailDatabase');
+const unixCryptTD = require('unix-crypt-td-js');
 
-/**
- * Registrar un nuevo correo en mailbox
- * @param {string} email
- * @param {string} password
- * @returns {Promise<void>}
- */
 const createMailboxUser = async (email, password) => {
-  const hashedPassword = sha512crypt(password); // Encriptación del maildb
+  // Generar hash SHA512-CRYPT compatible con Postfix
+  const salt = `$6$${Math.random().toString(36).substring(2, 15)}`;
+  const hashedPassword = `{SHA512-CRYPT}${unixCryptTD(password, salt)}`;
+
   const query = `
     INSERT INTO public.mailbox (email, password, active, last_modified)
     VALUES ($1, $2, true, NOW())
