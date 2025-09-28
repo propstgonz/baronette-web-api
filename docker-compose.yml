@@ -1,10 +1,10 @@
 services:
-  baronette-data-api:
+  baronette-web-api:
     build:
       context: .
       dockerfile: Dockerfile
     image: baronette-web-api
-    container_name: baronette-data-api
+    container_name: baronette-web-api
     ports:
       - "3000:3000"
     volumes:
