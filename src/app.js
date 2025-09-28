@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
+const mailRoutes = require('./routes/mailRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -28,6 +29,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // **Rutas de usuario directamente en la raíz**
 app.use('/', userRoutes);
+
+// Rutas de maildb
+app.use('/mail', mailRoutes);
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {

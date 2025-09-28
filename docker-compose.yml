@@ -15,6 +15,7 @@ services:
     networks:
       - baronette_db_api_network
       - traefik-net
+      - maildb_network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bwapi.rule=Host(`bwapi.baronette.es`)"
@@ -32,4 +33,6 @@ networks:
   baronette_db_api_network:
     external: true
   traefik-net:
+    external: true
+  maildb_network:
     external: true
