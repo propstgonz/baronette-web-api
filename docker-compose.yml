@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: baronette-data-api
+    image: baronette-web-api
     container_name: baronette-data-api
     ports:
       - "3000:3000"
