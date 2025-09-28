@@ -11,7 +11,7 @@ const registerMail = async (req, res) => {
   }
 
   try {
-    await mailModel.createMailboxUser(email, password);
+    await mailboxModel.createMailboxUser(email, password);
     res.status(201).json({ message: 'Correo registrado con éxito' });
   } catch (error) {
     console.error('Error registrando correo:', error.message);
