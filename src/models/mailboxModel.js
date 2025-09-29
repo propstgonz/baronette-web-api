@@ -1,22 +1,18 @@
 const pool = require('../config/mailDatabase');
 const unixCryptTD = require('unix-crypt-td-js');
-const crypto = require('crypto');
 
 const createMailboxUser = async (email, password) => {
-  // Generar un salt aleatorio de 16 caracteres válidos
-  const salt = crypto.randomBytes(12)           // 12 bytes → ~16 chars base64
-    .toString('base64')
-    .replace(/\+/g, '.')                         // reemplazar + y / por .
-    .replace(/\//g, '.')
-    .slice(0, 16);
-
-  // Formato completo SHA512-CRYPT: $6$salt$
+  // Salt de 16 caracteres válidos para crypt(3)
+  const saltChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
+  let salt = '';
+  for (let i = 0; i < 16; i++) {
+    salt += saltChars.charAt(Math.floor(Math.random() * saltChars.length));
+  }
   const fullSalt = `$6$${salt}$`;
 
-  // Generar el hash completo
+  // Hash compatible con Postfix/Dovecot
   const hashedPassword = `{SHA512-CRYPT}${unixCryptTD(password, fullSalt)}`;
 
-  // Guardar en DB
   const query = `
     INSERT INTO public.mailbox (email, password, active, last_modified)
     VALUES ($1, $2, true, NOW())
