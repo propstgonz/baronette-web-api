@@ -1,45 +1,47 @@
-const pool = require('../config/mailDatabase');
-const crypto = require('crypto');
-const sha512crypt = require('sha512crypt-node'); // npm install sha512crypt-node
+const pool = require('../config/mailDatabase'); // Conexión a maildb
+const unixCrypt = require('unix-crypt-td-js');
 
-// Generar salt válido
-function genSalt(len = 16) {
-  const chars = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  const bytes = crypto.randomBytes(len);
-  let s = '';
-  for (let i = 0; i < len; i++) {
-    s += chars[bytes[i] % chars.length];
-  }
-  return s;
+/**
+ * Generar hash en formato SHA512-CRYPT compatible con Dovecot/Postfix
+ * @param {string} password
+ * @returns {string} hash con prefijo {SHA512-CRYPT}
+ */
+function hashPassword(password) {
+  // Salt aleatorio: SHA512-CRYPT requiere que empiece por "$6$"
+  const salt = "$6$" + Math.random().toString(36).slice(2, 10);
+  const hash = unixCrypt(password, salt);
+  return `{SHA512-CRYPT}${hash}`;
 }
 
 /**
  * Registrar un nuevo correo en mailbox
  * @param {string} email
  * @param {string} password
- * @param {number} [rounds=5000] - número de rondas (default 5000, como crypt(3))
+ * @returns {Promise}
  */
-const createMailboxUser = async (email, password, rounds = 5000) => {
-  const salt = genSalt(16);
+async function registerMailbox(email, password) {
+  const client = await pool.connect();
+  try {
+    const hashedPassword = hashPassword(password);
 
-  // Salt con rondas explícitas
-  const fullSalt = `$6$rounds=${rounds}$${salt}`;
+    const query = `
+      INSERT INTO "mailbox" (username, password, domain, local_part, name, quota, is_active, is_admin)
+      VALUES ($1, $2, split_part($1, '@', 2), split_part($1, '@', 1), '', 0, true, false)
+      RETURNING *
+    `;
 
-  // Generar hash estilo crypt(3)
-  const cryptHash = sha512crypt(password, fullSalt);
+    const values = [email, hashedPassword];
+    const result = await client.query(query, values);
 
-  // Guardar con prefijo {SHA512-CRYPT}, como espera Dovecot
-  const hashedPassword = `{SHA512-CRYPT}${cryptHash}`;
-
-  const query = `
-    INSERT INTO public.mailbox (email, password, active, last_modified)
-    VALUES ($1, $2, true, NOW())
-  `;
-  const values = [email, hashedPassword];
-
-  await pool.query(query, values);
-};
+    return result.rows[0];
+  } catch (err) {
+    console.error("❌ Error registrando mailbox:", err);
+    throw err;
+  } finally {
+    client.release();
+  }
+}
 
 module.exports = {
-  createMailboxUser,
+  registerMailbox,
 };

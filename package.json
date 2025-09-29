@@ -16,7 +16,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "pg": "^8.13.0",
-    "sha512crypt-node": "^1.0.2",
+    "sha512crypt-node": "^0.1.0",
     "unix-crypt-td-js": "^1.1.4"
   }
 }
