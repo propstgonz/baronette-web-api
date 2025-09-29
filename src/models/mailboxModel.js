@@ -1,22 +1,36 @@
 const pool = require('../config/mailDatabase');
-const unixCryptTD = require('unix-crypt-td-js');
 const crypto = require('crypto');
+const sha512crypt = require('sha512crypt-node'); // npm install sha512crypt-node
 
-const createMailboxUser = async (email, password) => {
-  // Generar un salt aleatorio de 16 caracteres válidos
-  const salt = crypto.randomBytes(12)           // 12 bytes → ~16 chars base64
-    .toString('base64')
-    .replace(/\+/g, '.')                         // reemplazar + y / por .
-    .replace(/\//g, '.')
-    .slice(0, 16);
+// Generar salt válido
+function genSalt(len = 16) {
+  const chars = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const bytes = crypto.randomBytes(len);
+  let s = '';
+  for (let i = 0; i < len; i++) {
+    s += chars[bytes[i] % chars.length];
+  }
+  return s;
+}
 
-  // Formato completo SHA512-CRYPT: $6$salt$
-  const fullSalt = `$6$${salt}$`;
+/**
+ * Registrar un nuevo correo en mailbox
+ * @param {string} email
+ * @param {string} password
+ * @param {number} [rounds=5000] - número de rondas (default 5000, como crypt(3))
+ */
+const createMailboxUser = async (email, password, rounds = 5000) => {
+  const salt = genSalt(16);
 
-  // Generar el hash completo
-  const hashedPassword = `{SHA512-CRYPT}${unixCryptTD(password, fullSalt)}`;
+  // Salt con rondas explícitas
+  const fullSalt = `$6$rounds=${rounds}$${salt}`;
 
-  // Guardar en DB
+  // Generar hash estilo crypt(3)
+  const cryptHash = sha512crypt(password, fullSalt);
+
+  // Guardar con prefijo {SHA512-CRYPT}, como espera Dovecot
+  const hashedPassword = `{SHA512-CRYPT}${cryptHash}`;
+
   const query = `
     INSERT INTO public.mailbox (email, password, active, last_modified)
     VALUES ($1, $2, true, NOW())
