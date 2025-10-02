@@ -1,5 +1,6 @@
-const pool = require('../config/mailDatabase'); // Conexión a maildb
-const unixCrypt = require('unix-crypt-td-js');
+import pool from '../config/mailDatabase.js'; // Conexión a maildb
+import { execSync } from 'child_process';
+import crypto from 'crypto';
 
 /**
  * Generar hash en formato SHA512-CRYPT compatible con Dovecot/Postfix
@@ -7,10 +8,19 @@ const unixCrypt = require('unix-crypt-td-js');
  * @returns {string} hash con prefijo {SHA512-CRYPT}
  */
 function hashPassword(password) {
-  // Salt aleatorio: SHA512-CRYPT requiere que empiece por "$6$"
-  const salt = "$6$" + Math.random().toString(36).slice(2, 10);
-  const hash = unixCrypt(password, salt);
-  return `{SHA512-CRYPT}${hash}`;
+  // Generar salt aleatorio de 16 caracteres
+  const salt = crypto.randomBytes(12).toString('base64').slice(0, 16);
+  
+  // Usar doveadm para generar el hash (método más confiable)
+  try {
+    const hash = execSync(`doveadm pw -s SHA512-CRYPT -p '${password.replace(/'/g, "'\\''")}'`, { encoding: 'utf-8' }).trim();
+    return hash;
+  } catch {
+    // Fallback: usar formato BLF-CRYPT que Dovecot también acepta
+    const bcrypt = require('bcrypt');
+    const hash = bcrypt.hashSync(password, 10);
+    return `{BLF-CRYPT}${hash}`;
+  }
 }
 
 /**
@@ -42,6 +52,6 @@ async function registerMailbox(email, password) {
   }
 }
 
-module.exports = {
+export {
   registerMailbox,
 };
