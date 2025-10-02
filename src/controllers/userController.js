@@ -1,6 +1,6 @@
 const userModel = require('../models/userModel');
 const bcrypt = require('bcrypt');
-const pool = require('../config/database');
+const pool = require('../config/mailDatabase');
 
 
 /**
