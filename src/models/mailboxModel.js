@@ -34,13 +34,14 @@ async function registerMailbox(email, password) {
   try {
     const hashedPassword = hashPassword(password);
 
-    const query = `
-      INSERT INTO "mailbox" (username, password, domain, local_part, name, quota, is_active, is_admin)
-      VALUES ($1, $2, split_part($1, '@', 2), split_part($1, '@', 1), '', 0, true, false)
-      RETURNING *
-    `;
+  const query = `
+    INSERT INTO "mailbox" (email, password)
+    VALUES ($1, $2)
+    RETURNING *
+  `;
+  
+  const values = [email, hashedPassword];
 
-    const values = [email, hashedPassword];
     const result = await client.query(query, values);
 
     return result.rows[0];
