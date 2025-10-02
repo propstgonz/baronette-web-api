@@ -118,6 +118,13 @@ Verifica si un usuario es administrador.
     - ``200 OK``: El usuario es administrador o no.
     - ``500 Internal Server Error``: Error al verificar el estatus del usuario.
 
+### ``POST /mail/register-mail``
+    ```json
+    { 
+        "email": "usuario12345@baronette.es", 
+        "password": "12345" 
+    }'
+    ```
 ---
 ## 4. Modelo de Base de Datos
 La API se conecta a una base de datos con las siguientes características:
