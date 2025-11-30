@@ -2,33 +2,60 @@ pipeline {
   agent any
 
   environment {
-    COMPOSE_CMD = "docker compose --project-directory ${WORKSPACE}"
+    // Fuerza a Docker Compose a usar el workspace correcto
+    COMPOSE = "docker compose --project-directory ${WORKSPACE}"
   }
 
   stages {
 
     stage('Checkout') {
       steps {
-        echo 'Checking out code...'
+        echo '📥 Descargando repo...'
         checkout scm
+      }
+    }
+
+    stage('Validar carpeta src') {
+      steps {
+        script {
+          sh """
+            echo '📂 Workspace actual:' 
+            pwd
+            echo '📂 Contenido:'
+            ls -la
+
+            echo '📂 Verificando carpeta src...'
+            if [ ! -d src ]; then
+              echo '❌ ERROR: La carpeta src NO existe en el workspace'
+              exit 1
+            fi
+
+            echo '✔ Carpeta src encontrada correctamente.'
+          """
+        }
       }
     }
 
     stage('Stop Previous Deployment') {
       steps {
         script {
-          echo 'Stopping previous deployment...'
-          sh "${COMPOSE_CMD} down --remove-orphans || true"
+          echo '🛑 Deteniendo despliegue previo...'
+          sh """
+            cd ${WORKSPACE}
+            ${COMPOSE} down --remove-orphans || true
+          """
         }
       }
     }
 
-    stage('Recreate API container') {
+    stage('Rebuild & Deploy') {
       steps {
         script {
+          echo '🚀 Reconstruyendo y levantando servicio...'
           sh """
-            ${COMPOSE_CMD} build --no-cache
-            ${COMPOSE_CMD} up -d
+            cd ${WORKSPACE}
+            ${COMPOSE} build --no-cache
+            ${COMPOSE} up -d
           """
         }
       }
@@ -37,21 +64,22 @@ pipeline {
     stage('Verify Deployment') {
       steps {
         script {
-          echo 'Verifying deployment...'
+          echo '🔍 Verificando contenedores...'
           sh """
             sleep 5
-            ${COMPOSE_CMD} ps
-            ${COMPOSE_CMD} logs --tail=50
+            cd ${WORKSPACE}
+            ${COMPOSE} ps
+            ${COMPOSE} logs --tail=100
           """
         }
       }
     }
 
-    stage('Cleanup') {
+    stage('Cleanup Docker') {
       steps {
         script {
-          echo '🧹 Cleaning up local images...'
-          sh 'docker system prune -f'
+          echo '🧹 Limpiando imágenes...'
+          sh "docker system prune -f"
         }
       }
     }
@@ -59,10 +87,10 @@ pipeline {
 
   post {
     success {
-      echo 'Deployment completed successfully.'
+      echo '🎉 Despliegue completado correctamente.'
     }
     failure {
-      echo 'Deployment failed.'
+      echo '❌ El despliegue ha fallado.'
     }
   }
 }
